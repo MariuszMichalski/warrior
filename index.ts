@@ -7,6 +7,7 @@ import {homeRouter} from "./routers/home";
 import { warriorRouter } from "./routers/warrior";
 import {arenaRouter} from "./routers/arena";
 import {hallOfFameRouter} from "./routers/hallOfFame";
+import './utils/db';
 
 const app = express();
 

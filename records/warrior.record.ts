@@ -1,6 +1,21 @@
+import { pool } from "../utils/db";
 import {ValidationError} from "../utils/errors";
+import {v4 as uuid} from "uuid";
+import {FieldPacket} from "mysql2";
 
-export class WarriorRecord {
+type WarriorRecordResults = [WarriorRecord[], FieldPacket[]]
+
+export interface WarriorEntity {
+    id?: string;
+    readonly name: string;
+    readonly str: number;
+    readonly def: number;
+    readonly stamina: number;
+    readonly agility: number;
+    wins?: number;
+}
+
+export class WarriorRecord implements WarriorEntity{
     public id?: string;
     public readonly name: string;
     public readonly str: number;
@@ -9,7 +24,7 @@ export class WarriorRecord {
     public readonly agility: number;
     public wins?: number;
 
-    constructor(obj: WarriorRecord) {
+    constructor(obj: WarriorEntity) {
         const {id, name, str, def, stamina, agility, wins} = obj;
 
         const sum = [str, def, stamina, agility].reduce((prev,curr) => prev + curr, 0);
@@ -30,21 +45,43 @@ export class WarriorRecord {
         this.wins = wins;
     }
 
-    async insert() {
+    async insert(): Promise<string> {
+        if (!this.id) {
+            this.id = uuid();
+        }
+        if (typeof this.wins !== 'number') {
+            this.wins = 0;
+        }
+        await pool.execute("INSERT INTO `warriors`(`id`, `name`, `str`, `def`, `stamina`, `agility`, `wins`) VALUES (:id, :name, :str, :def, :stamina, :agility, :wins)", {
+            id: this.id,
+            name: this.name,
+            str: this.str,
+            def: this.def,
+            stamina: this.stamina,
+            agility: this.agility,
+            wins: this.wins,
+        });
+        return this.id
+    }
+
+
+    async update(): Promise<void> {
 
     }
 
-    async update() {
-
+    static async getOne(id: string): Promise<WarriorRecord | null> {
+        const [results] = await pool.execute("SELECT * FROM `warriors` WHERE `id` = :id", {
+            id,
+        }) as WarriorRecordResults;
+        return results.length === 0 ? null : new WarriorRecord(results[0])
     }
 
-    static async getOne(id: string) {
-
+    static async listAll(): Promise<WarriorRecord[]> {
+        const [results] = await pool.execute("SELECT * FROM `warriors`") as WarriorRecordResults
+        return results.map(obj => new WarriorRecord(obj));
     }
-    static async listAll() {
 
-    }
-    static async listTop(topCount: number) {
+    static async listTop(topCount: number): Promise<WarriorRecord[]> {
 
     }
 }
