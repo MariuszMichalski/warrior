@@ -75,9 +75,9 @@ export class WarriorRecord implements WarriorEntity{
 
     static async getOne(id: string): Promise<WarriorRecord | null> {
         const [results] = await pool.execute("SELECT * FROM `warriors` WHERE `id` = :id", {
-            id,
+            id: id,
         }) as WarriorRecordResults;
-        return results.length === 0 ? null : new WarriorRecord(results[0])
+        return results.length === 0 ? null : results[0];
     }
 
     static async listAll(): Promise<WarriorRecord[]> {
@@ -86,6 +86,9 @@ export class WarriorRecord implements WarriorEntity{
     }
 
     static async listTop(topCount: number): Promise<WarriorRecord[]> {
-        return [];
+        const [results] = await pool.execute("SELECT * FROM `warriors` ORDER BY `wins` DESC LIMIT :topCount", {
+            topCount: topCount,
+        }) as WarriorRecordResults
+        return results.map(obj => new WarriorRecord(obj));
     }
 }
