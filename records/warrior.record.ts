@@ -37,21 +37,15 @@ export class WarriorRecord implements WarriorEntity{
             throw new ValidationError(`Name must be between 3 and 50 signs. Now its ${name.length}`);
         }
 
-        this.id = id;
+        this.id = id ?? uuid();
         this.name = name;
         this.str = str;
         this.def = def;
         this.stamina = stamina;
-        this.wins = wins;
+        this.wins = wins ?? 0;
     }
 
     async insert(): Promise<string> {
-        if (!this.id) {
-            this.id = uuid();
-        }
-        if (typeof this.wins !== 'number') {
-            this.wins = 0;
-        }
         await pool.execute("INSERT INTO `warriors`(`id`, `name`, `str`, `def`, `stamina`, `agility`, `wins`) VALUES (:id, :name, :str, :def, :stamina, :agility, :wins)", {
             id: this.id,
             name: this.name,
@@ -82,6 +76,6 @@ export class WarriorRecord implements WarriorEntity{
     }
 
     static async listTop(topCount: number): Promise<WarriorRecord[]> {
-
+        return [];
     }
 }
