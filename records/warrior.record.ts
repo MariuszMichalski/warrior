@@ -27,7 +27,15 @@ export class WarriorRecord implements WarriorEntity{
     constructor(obj: WarriorEntity) {
         const {id, name, str, def, stamina, agility, wins} = obj;
 
-        const sum = [str, def, stamina, agility].reduce((prev,curr) => prev + curr, 0);
+        const stats = [str, def, stamina, agility]
+
+        const sum = stats.reduce((prev,curr) => prev + curr, 0);
+
+        for (const stat of stats) {
+            if (stat < 1) {
+                throw new ValidationError('each stat must have at least 1 point')
+            }
+        }
 
         if (sum !== 10) {
             throw new ValidationError(`Sum of all statistics has to be 10. Now its ${sum} `);
@@ -60,7 +68,9 @@ export class WarriorRecord implements WarriorEntity{
 
 
     async update(): Promise<void> {
-
+        await pool.execute("UPDATE `warriors` SET `wins` = :wins", {
+            wins: this.wins
+        })
     }
 
     static async getOne(id: string): Promise<WarriorRecord | null> {
