@@ -1,5 +1,6 @@
 import {Router} from "express";
 import {WarriorRecord} from "../records/warrior.record";
+import {ValidationError} from "../utils/errors";
 
 export const warriorRouter = Router()
 
@@ -8,6 +9,11 @@ warriorRouter
         res.render('warrior/add-form.hbs')
     })
     .post('/', async (req,res) => {
+
+        if (await WarriorRecord.isNameTaken(req.body.name)) {
+            throw new ValidationError(`Name ${req.body.name} is already taken!`)
+        }
+
         const warrior = new WarriorRecord({
             ...req.body,
             str: Number(req.body.str),
