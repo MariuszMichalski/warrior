@@ -50,6 +50,7 @@ export class WarriorRecord implements WarriorEntity{
         this.str = str;
         this.def = def;
         this.stamina = stamina;
+        this.agility = agility;
         this.wins = wins ?? 0;
     }
 
@@ -63,7 +64,8 @@ export class WarriorRecord implements WarriorEntity{
             agility: this.agility,
             wins: this.wins,
         });
-        return this.id
+
+        return this.id;
     }
 
 
