@@ -29,6 +29,8 @@ export const fight = (warrior1: WarriorRecord, warrior2: WarriorRecord): {
             if (defender.dp < 0 ) {
                 defender.hp += defender.dp
             }
+        } else {
+            defender.hp -= attackStr;
         }
 
         [defender, attacker] = [attacker, defender]
