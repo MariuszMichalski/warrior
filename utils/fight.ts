@@ -23,7 +23,7 @@ export const fight = (warrior1: WarriorRecord, warrior2: WarriorRecord): {
     do {
         const attackStr = attacker.warrior.str
 
-        log.push(`${attacker.warrior.name}will attack ${defender.warrior.name} with ${attackStr} strength`)
+        log.push(`${attacker.warrior.name} will attack ${defender.warrior.name} with ${attackStr} strength`)
 
         if (defender.dp + defender.warrior.agility > attackStr) {
             defender.dp -= attackStr;
