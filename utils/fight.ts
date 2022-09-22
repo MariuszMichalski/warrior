@@ -23,13 +23,20 @@ export const fight = (warrior1: WarriorRecord, warrior2: WarriorRecord): {
     do {
         const attackStr = attacker.warrior.str
 
+        log.push(`${attacker.warrior.name}will attack ${defender.warrior.name} with ${attackStr} strength`)
+
         if (defender.dp + defender.warrior.agility > attackStr) {
             defender.dp -= attackStr;
 
+            log.push(`${defender.warrior.name} defend against ${attacker.warrior.name}`)
+
             if (defender.dp < 0 ) {
+
+                log.push(`${attacker.warrior.name} broke defence ${defender.warrior.name} with ${-defender.dp} `)
                 defender.hp += defender.dp
             }
         } else {
+            log.push(`${attacker.warrior.name} hit ${defender.warrior.name} by ${attackStr}`)
             defender.hp -= attackStr;
         }
 
@@ -37,6 +44,7 @@ export const fight = (warrior1: WarriorRecord, warrior2: WarriorRecord): {
     } while (defender.hp > 0)
 
     const winner = defender.warrior
+    log.push(`${winner.name} won!`)
 
     return {
         log,
